@@ -2,7 +2,7 @@ import numpy as np
 import cv2
 
 
-class findIDCard:
+class FindCard:
     def img_resize(self, imggray, dwidth):
         """
         调整图片大小
@@ -19,14 +19,14 @@ class findIDCard:
         crop = cv2.resize(src=crop, dsize=(dwidth, int(height)), interpolation=cv2.INTER_CUBIC)
         return crop
 
-    def find(self, img2_name):
+    def find(self, img1_name, img2_name):
         """
-        查找身份证的轮廓
+        查找并裁剪出身份证的轮廓
 
-        :param img2_name: 文件名
+        :param img1_name: 模板图片文件名str，相对路径
+        :param img2_name: 待裁剪图片文件名str，相对路径
         :return: 查找到的身份证图片
         """
-        img1_name = 'idcard_mask.jpg'
         img1 = cv2.imread(img1_name, 0)  # 读取灰度图片并调整大小
         img1 = self.img_resize(img1, 640)
 
@@ -37,7 +37,7 @@ class findIDCard:
         img_org = self.img_resize(img_org, 1920)
 
         # 启动 SIFT 检测器
-        sift = cv2.xfeatures2d.SIFT_create()
+        sift = cv2.SIFT_create()
         # 使用 SIFT 找到关键点和描述符
         kp1, des1 = sift.detectAndCompute(img1, None)
         kp2, des2 = sift.detectAndCompute(img2, None)
@@ -72,6 +72,6 @@ class findIDCard:
 
 
 if __name__ == '__main__':
-    img = findIDCard().find('1.jpg')
+    img = FindCard().find('template/idcard_front.jpg', 'pic/1.jpg')
     cv2.imshow('img', img)
     cv2.waitKey()
