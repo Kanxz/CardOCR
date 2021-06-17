@@ -15,7 +15,7 @@ class IDCardBackOCR:
         time1 = time.time()
         # 查找身份证轮廓并裁剪
         find = FindCard.FindCard()
-        img = find.find('template/idcard_back.jpg', img0)
+        img = find.find('card/idcard_back.jpg', img0)
 
         # 调用ocr模型
         ocr = CnOcr(name="ocr")  # 识别中文

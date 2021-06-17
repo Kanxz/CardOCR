@@ -1,0 +1,129 @@
+.main {
+    text-align: center;
+    display: flex;
+}
+
+#head {
+    margin: 30px 0 0;
+    font-size: 30px;
+    text-align: center;
+}
+
+.img_area {
+    width: 500px;
+    height: 400px;
+    border-radius: 5px;
+    background: #e7e7f2;
+    margin: 50px auto;
+    position: relative;
+}
+
+.response_area {
+    position: relative;
+    width: 500px;
+    height: 400px;
+    border: 1px solid gray;
+    margin: 50px auto;
+}
+
+.img_show {
+    position: absolute;
+    width: 400px;
+    height: 300px;
+    border: 1px solid white;
+    border-radius: 5px;
+    margin: 20px 50px;
+}
+
+.button {
+    width: 460px;
+    height: 42px;
+    position: absolute;
+    margin: 340px 20px 0 20px;
+    text-align: left;
+}
+
+.upload {
+    display: none;
+}
+
+.upload_label {
+    position: absolute;
+    width: 100px;
+    height: 40px;
+    line-height: 40px;
+    text-align: center;
+    border: 1px solid gray;
+    border-radius: 5px;
+    background: #73a1f2;
+    cursor: pointer;
+    color: white;
+    margin: auto 20px;
+}
+
+#url_text {
+    position: absolute;
+    width: 225px;
+    height: 40px;
+    border: 1px solid gray;
+    border-radius: 5px 0 0 5px;
+    margin: 0 0 0 140px;
+    padding: 0 10px;
+}
+
+#url_submit {
+    position: absolute;
+    width: 80px;
+    height: 42px;
+    border: 1px solid gray;
+    border-radius: 0 5px 5px 0;
+    background: #73a1f2;
+    color: white;
+    cursor: pointer;
+    margin: auto auto auto 365px;
+    padding: 0;
+    font-size: 16px;
+}
+
+.active {
+    color: #73a1f2;
+    background: white;
+}
+
+.hide {
+    display: none;
+}
+
+.show {
+    display: block;
+}
+
+#ul1 {
+    list-style-type: none;
+    background: #e7e7f2;
+    height: 50px;
+    display: flex;
+    padding: 0;
+    margin: 0;
+    cursor: pointer;
+}
+
+#ul1 li {
+    width: 250px;
+    height: 50px;
+    line-height: 50px;
+}
+
+#res_text {
+    text-align: left;
+    padding: 20px;
+}
+
+#res_json {
+    height: 310px;
+    width: 460px;
+    padding: 20px;
+    text-align: left;
+    overflow-x: auto;
+    overflow-y: auto;
+}

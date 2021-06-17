@@ -17,7 +17,7 @@ class IDCardFrontOCR:
 
         # 识别身份证照片的轮廓，并裁剪出来
         find = FindCard.FindCard()
-        img = find.find('template/idcard_front.jpg', img0)
+        img = find.find('card/idcard_front.jpg', img0)
         # time3 = time.time()
         # print(time3 - time1)
         img = cv2.cvtColor(img, cv2.COLOR_RGB2GRAY)  # 图片灰度化

@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>证件照识别</title>
+    <link rel="stylesheet" type="text/css" href="../static/index.css">
+    <script src="../static/index.js"></script>
+</head>
+
+<body>
+<div id="head">证件照识别</div>
+<div class="main">
+    <div class="img_area">
+        <div class="img_show"></div>
+        <div class="button">
+            <label for="upload" class="upload_label">本地上传</label>
+            <input type="file" class="upload" id="upload">
+            <input type="text" id="url_text" placeholder="图片URL">
+            <input type="submit" id="url_submit" value="检测">
+        </div>
+    </div>
+    <div class="response_area" id="response_area">
+        <ul id="ul1">
+            <li class="active" onclick="show(0)">分析结果</li>
+            <li onclick="show(1)">Response JSON</li>
+        </ul>
+        <div class="show" id="res_text"></div>
+        <div class="hide" id="res_json"></div>
+    </div>
+</div>
+</body>
+
+</html>

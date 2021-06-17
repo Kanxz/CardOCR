@@ -37,7 +37,7 @@ class FindCard:
         img_org = self.img_resize(img_org, 1920)
 
         # 启动 SIFT 检测器
-        sift = cv2.SIFT_create()
+        sift = cv2.xfeatures2d.SIFT_create()
         # 使用 SIFT 找到关键点和描述符
         kp1, des1 = sift.detectAndCompute(img1, None)
         kp2, des2 = sift.detectAndCompute(img2, None)
@@ -72,6 +72,6 @@ class FindCard:
 
 
 if __name__ == '__main__':
-    img = FindCard().find('template/idcard_front.jpg', 'pic/1.jpg')
+    img = FindCard().find('card/idcard_front.jpg', 'pic/1.jpg')
     cv2.imshow('img', img)
     cv2.waitKey()

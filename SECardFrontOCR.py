@@ -1,6 +1,5 @@
 import FindCard
-from cnocr import CnOcr, NUMBERS, ENG_LETTERS
-from skimage import io
+from cnocr import CnOcr
 import cv2
 import json
 
@@ -16,7 +15,7 @@ class SECardFrontOCR:
 
         # 目标提取
         find = FindCard.FindCard()
-        img = find.find('template/secard_front.jpg', img0)
+        img = find.find('card/secard_front.jpg', img0)
         img = cv2.cvtColor(img, cv2.COLOR_RGB2GRAY)
 
         # 调用ocr模型
@@ -24,7 +23,7 @@ class SECardFrontOCR:
         ocr_num = CnOcr(name="num")  # 识别数字
         ocr_id = CnOcr(name="id")
         ocr_num.set_cand_alphabet({'0', '1', '2', '3', '4', '5', '6', '7', '8', '9'})
-        ocr_num.set_cand_alphabet({'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'X'})
+        ocr_id.set_cand_alphabet({'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'X'})
 
         # 裁剪姓名区域，并对该区域进行识别
         name_img = img[110:135, 265:340]
