@@ -7,6 +7,7 @@
     margin: 30px 0 0;
     font-size: 30px;
     text-align: center;
+    cursor: pointer;
 }
 
 .img_area {
@@ -24,6 +25,10 @@
     height: 400px;
     border: 1px solid gray;
     margin: 50px auto;
+}
+
+#loading {
+    display: none;
 }
 
 .img_show {
@@ -59,6 +64,10 @@
     cursor: pointer;
     color: white;
     margin: auto 20px;
+}
+
+#file_submit {
+    display: none;
 }
 
 #url_text {
@@ -117,9 +126,12 @@
 #res_text {
     text-align: left;
     padding: 20px;
+    white-space: pre-line;
+    line-height: 1.5em;
 }
 
 #res_json {
+    white-space: pre;
     height: 310px;
     width: 460px;
     padding: 20px;

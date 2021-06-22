@@ -9,24 +9,41 @@
 </head>
 
 <body>
-<div id="head">证件照识别</div>
+<div id="head" onclick="location.href='/'">证件照识别</div>
 <div class="main">
     <div class="img_area">
-        <div class="img_show"></div>
+        <div class="img_show" id="img_show">
+            <img src="static/pic/loading.gif" alt="loading" width="400" height="300" id="loading">
+            {% if img %}
+            <img src="{{img}}" alt="img" width="400" height="300" id="pic">
+            {% endif %}
+            {% if msg %}
+            <div id="msg">{{msg}}</div>
+            {% endif %}
+        </div>
         <div class="button">
-            <label for="upload" class="upload_label">本地上传</label>
-            <input type="file" class="upload" id="upload">
-            <input type="text" id="url_text" placeholder="图片URL">
-            <input type="submit" id="url_submit" value="检测">
+            <form action="/file_upload" enctype="multipart/form-data" method="post">
+                <label for="upload" class="upload_label">本地上传</label>
+                <input type="file" class="upload" id="upload" name="photo" onchange="submit_file()">
+                <input type="submit" id="file_submit" onclick="loading()">
+            </form>
+            <form action="/url_upload" method="post">
+                <input type="text" id="url_text" placeholder="图片URL" name="text">
+                <input type="submit" id="url_submit" value="检测" onclick="loading()">
+            </form>
         </div>
     </div>
     <div class="response_area" id="response_area">
         <ul id="ul1">
             <li class="active" onclick="show(0)">分析结果</li>
-            <li onclick="show(1)">Response JSON</li>
+            <li onclick="show(1)" onmouseup="jsonModify()">Response JSON</li>
         </ul>
-        <div class="show" id="res_text"></div>
-        <div class="hide" id="res_json"></div>
+        <div class="show" id="res_text" onchange="rmLoading()">
+            {{res}}
+        </div>
+        <div class="hide" id="res_json">
+            {{json}}
+        </div>
     </div>
 </div>
 </body>

@@ -31,9 +31,9 @@ class IDCardFrontOCR:
         name = "".join(name)
 
         # 裁剪性别区域，并对该区域进行识别
-        sex_img = img[100:140, 115:160]
-        sex = ocr.ocr_for_single_line(sex_img)
-        sex = "".join(sex)
+        gender_img = img[100:140, 115:160]
+        gender = ocr.ocr_for_single_line(gender_img)
+        gender = "".join(gender)
 
         # 裁剪民族区域，并对该区域进行识别
         nation_img = img[110:140, 250:330]
@@ -46,7 +46,7 @@ class IDCardFrontOCR:
         # _, address_img = cv2.threshold(address_img, 150, 255, cv2.THRESH_BINARY)
         # 自适应阈值化
         address_img = cv2.adaptiveThreshold(address_img, 255, cv2.ADAPTIVE_THRESH_GAUSSIAN_C,
-                                            cv2.THRESH_BINARY, 21, 25)
+                                            cv2.THRESH_BINARY, 81, 40)
         tmp = ocr.ocr(address_img)
         address = ""
         for i in range(len(tmp)):
@@ -65,7 +65,7 @@ class IDCardFrontOCR:
 
         # 返回json数据
         json_data = {"name": name,
-                     "sex": sex,
+                     "gender": gender,
                      "nation": nation,
                      "address": address,
                      "ID": ID}
