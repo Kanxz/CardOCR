@@ -1,4 +1,3 @@
-import FindCard
 import cv2
 from cnocr import CnOcr
 import json
@@ -6,21 +5,15 @@ import time
 
 
 class IDCardFrontOCR:
-    def idCard_front_ocr(self, img0):
+    def idCard_front_ocr(self):
         """
         读取身份证正面信息
 
-        :param img0: 待识别图片地址str
         :return: json数据
         """
         time1 = time.time()
 
-        # 识别身份证照片的轮廓，并裁剪出来
-        find = FindCard.FindCard()
-        img = find.find('card/idcard_front.jpg', img0)
-        # time3 = time.time()
-        # print(time3 - time1)
-        img = cv2.cvtColor(img, cv2.COLOR_RGB2GRAY)  # 图片灰度化
+        img = cv2.imread('static/pic/img.jpg', 0)
 
         # 调用cnocr模型进行文字识别
         ocr = CnOcr(name='ocr')
@@ -40,18 +33,39 @@ class IDCardFrontOCR:
         nation = ocr.ocr_for_single_line(nation_img)
         nation = "".join(nation)
 
+        # # 裁剪地址区域，并对该区域进行识别
+        # address_img = img[200:310, 120:400]
+        # # 二值化，提高识别准确率
+        # # _, address_img = cv2.threshold(address_img, 150, 255, cv2.THRESH_BINARY)
+        # # 自适应阈值化
+        # address_img = cv2.adaptiveThreshold(address_img, 255, cv2.ADAPTIVE_THRESH_GAUSSIAN_C,
+        #                                     cv2.THRESH_BINARY, 81, 40)
+        # tmp = ocr.ocr(address_img)
+        # address = ""
+        # for i in range(len(tmp)):
+        #     tmp1 = "".join(tmp[i])
+        #     address = address + tmp1
+
+        address = ""
         # 裁剪地址区域，并对该区域进行识别
-        address_img = img[200:310, 120:400]
-        # 二值化，提高识别准确率
-        # _, address_img = cv2.threshold(address_img, 150, 255, cv2.THRESH_BINARY)
+        address_img = img[210:242, 110:395]
         # 自适应阈值化
         address_img = cv2.adaptiveThreshold(address_img, 255, cv2.ADAPTIVE_THRESH_GAUSSIAN_C,
-                                            cv2.THRESH_BINARY, 81, 40)
-        tmp = ocr.ocr(address_img)
-        address = ""
-        for i in range(len(tmp)):
-            tmp1 = "".join(tmp[i])
-            address = address + tmp1
+                                             cv2.THRESH_BINARY, 57, 25)
+        tmp = "".join(ocr.ocr_for_single_line(address_img))
+        address = address + tmp
+
+        address_img = img[240:280, 110:400]
+        address_img = cv2.adaptiveThreshold(address_img, 255, cv2.ADAPTIVE_THRESH_GAUSSIAN_C,
+                                             cv2.THRESH_BINARY, 57, 25)
+        tmp = "".join(ocr.ocr_for_single_line(address_img))
+        address = address + tmp
+
+        address_img = img[280:320, 110:400]
+        address_img = cv2.adaptiveThreshold(address_img, 255, cv2.ADAPTIVE_THRESH_GAUSSIAN_C,
+                                             cv2.THRESH_BINARY, 45, 30)
+        tmp = "".join(ocr.ocr_for_single_line(address_img))
+        address = address + tmp
 
         ocr_id = CnOcr(name='ID')
         # 限定ocr识别的范围
@@ -63,21 +77,21 @@ class IDCardFrontOCR:
         ID = ocr_id.ocr_for_single_line(id_img)
         ID = "".join(ID)
 
+        birth = list(ID[6:14])
+        birth.insert(4, '-')
+        birth.insert(7, '-')
+        birth = "".join(birth)
+
         # 返回json数据
         json_data = {"name": name,
                      "gender": gender,
                      "nation": nation,
+                     "birth": birth,
                      "address": address,
-                     "ID": ID}
+                     "ID": ID,
+                     "card_type": 'idCard_front'}
         # print(json_data)
         res = json.dumps(json_data, ensure_ascii=False)
         time2 = time.time()
-        print(time2 - time1)
+        print('OCR时间：' + str(time2 - time1))
         return res
-
-
-if __name__ == '__main__':
-    id_card_ocr = IDCardFrontOCR()
-    # img = cv2.imread("1.jpg")
-    res = id_card_ocr.idCard_front_ocr("pic/2.jpg")
-    print(res)
