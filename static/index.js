@@ -68,7 +68,7 @@ function jsonModify() {
     // console.log(json);
 
     try {
-        json = JSON.stringify(JSON.parse(json), null, 2);
+        json = JSON.stringify(JSON.parse(json), null, 4);
         json = json
             .replace(/&/g, '&amp;')
             .replace(/</g, '&lt;')

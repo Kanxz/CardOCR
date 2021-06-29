@@ -5,6 +5,27 @@ import time
 
 
 class IDCardFrontOCR:
+    def id_check(self, id_num):
+        """
+        判断身份证号码是否合法
+
+        :param id_num: 身份证号码str
+        :return: bool
+        """
+        if len(id_num) != 18:
+            return False
+        # 身份证前17位权值
+        weight = [7, 9, 10, 5, 8, 4, 2, 1, 6, 3, 7, 9, 10, 5, 8, 4, 2]
+        # 检验码取值范围，与下标对应
+        value = ['1', '0', 'X', '9', '8', '7', '6', '5', '4', '3', '2']
+        count = 0
+        for index in range(17):
+            count = count + int(id_num[index]) * weight[index]
+        if value[count % 11] == id_num[17]:
+            return True
+        else:
+            return False
+
     def idCard_front_ocr(self):
         """
         读取身份证正面信息
@@ -22,11 +43,6 @@ class IDCardFrontOCR:
         name_img = img[50:90, 115:240]
         name = ocr.ocr_for_single_line(name_img)
         name = "".join(name)
-
-        # 裁剪性别区域，并对该区域进行识别
-        gender_img = img[100:140, 115:160]
-        gender = ocr.ocr_for_single_line(gender_img)
-        gender = "".join(gender)
 
         # 裁剪民族区域，并对该区域进行识别
         nation_img = img[110:140, 250:330]
@@ -51,19 +67,19 @@ class IDCardFrontOCR:
         address_img = img[210:242, 110:395]
         # 自适应阈值化
         address_img = cv2.adaptiveThreshold(address_img, 255, cv2.ADAPTIVE_THRESH_GAUSSIAN_C,
-                                             cv2.THRESH_BINARY, 57, 25)
+                                            cv2.THRESH_BINARY, 57, 25)
         tmp = "".join(ocr.ocr_for_single_line(address_img))
         address = address + tmp
 
         address_img = img[240:280, 110:400]
         address_img = cv2.adaptiveThreshold(address_img, 255, cv2.ADAPTIVE_THRESH_GAUSSIAN_C,
-                                             cv2.THRESH_BINARY, 57, 25)
+                                            cv2.THRESH_BINARY, 57, 25)
         tmp = "".join(ocr.ocr_for_single_line(address_img))
         address = address + tmp
 
         address_img = img[280:320, 110:400]
         address_img = cv2.adaptiveThreshold(address_img, 255, cv2.ADAPTIVE_THRESH_GAUSSIAN_C,
-                                             cv2.THRESH_BINARY, 45, 30)
+                                            cv2.THRESH_BINARY, 45, 30)
         tmp = "".join(ocr.ocr_for_single_line(address_img))
         address = address + tmp
 
@@ -82,6 +98,12 @@ class IDCardFrontOCR:
         birth.insert(7, '-')
         birth = "".join(birth)
 
+        # 裁剪性别区域，并对该区域进行识别
+        gender_img = img[100:140, 115:160]
+        ocr.set_cand_alphabet({'男', '女'})
+        gender = ocr.ocr_for_single_line(gender_img)
+        gender = "".join(gender)
+
         # 返回json数据
         json_data = {"name": name,
                      "gender": gender,
@@ -89,6 +111,7 @@ class IDCardFrontOCR:
                      "birth": birth,
                      "address": address,
                      "ID": ID,
+                     "legality": self.id_check(ID),
                      "card_type": 'idCard_front'}
         # print(json_data)
         res = json.dumps(json_data, ensure_ascii=False)

@@ -51,7 +51,8 @@ class FindCard:
             if m.distance < 0.7 * n.distance:
                 self.__good.append(m)
 
-        if len(self.__good) > 25:
+        # print(len(self.__good))
+        if len(self.__good) > 30:
             return True
         return False
 
@@ -86,10 +87,10 @@ class FindCard:
             card_type = 'idCard_front'
         elif self.find_key_points(idCard_back):
             card_type = 'idCard_back'
-        elif self.find_key_points(seCard_back):
-            card_type = 'seCard_back'
         elif self.find_key_points(seCard_front):
             card_type = 'seCard_front'
+        elif self.find_key_points(seCard_back):
+            card_type = 'seCard_back'
         else:
             card_type = 'other'
             time2 = time.time()

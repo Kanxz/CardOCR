@@ -33,7 +33,7 @@ class SECardFrontOCR:
         SE_ID = "".join(SE_ID)
 
         # 裁剪发卡日期区域，并对该区域进行识别
-        date_img = img[175:205, 300:415]
+        date_img = img[175:205, 295:415]
         date = ocr_num.ocr_for_single_line(date_img)
         date = "".join(date)
 
