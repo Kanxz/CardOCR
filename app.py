@@ -9,14 +9,11 @@ import IDCardFrontOCR
 import SECardFrontOCR
 import json
 import requests
-import socket
 import re
 import imghdr
 
 # 符合条件的图片后缀
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg'}
-
-FindCard = FindCard.FindCard()
 
 app = Flask(__name__)
 
@@ -25,6 +22,7 @@ app.send_file_max_age_default = timedelta(seconds=1)
 # 获取路径
 path = os.path.dirname(__file__) + '/static/pic/'
 
+FindCard = FindCard.FindCard()
 IDCardFrontOCR = IDCardFrontOCR.IDCardFrontOCR()
 IDCardBackOCR = IDCardBackOCR.IDCardBackOCR()
 SECardFrontOCR = SECardFrontOCR.SECardFrontOCR()
@@ -132,7 +130,7 @@ def file_upload():
     print('总耗时：' + str(time2 - time1))
     # 添加用时项
     time_used = round(time2 - time1, 3)
-    ip = request.remote_addr
+    ip = request.remote_addr  # 获取IP
     res_dict = {'IP': ip, 'time_used': time_used, 'card': json_dict}
     json_res = json.dumps(res_dict)
 

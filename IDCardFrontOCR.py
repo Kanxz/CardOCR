@@ -5,15 +5,27 @@ import time
 
 
 class IDCardFrontOCR:
-    def id_check(self, id_num):
+    def id_check(self, id_num, birth):
         """
         判断身份证号码是否合法
 
+        :param birth: 初试日期
         :param id_num: 身份证号码str
         :return: bool
         """
         if len(id_num) != 18:
             return False
+
+        # 身份证与出生日期是否匹配
+        year, month, day = birth.split('-', 2)
+        if len(month) is 1:
+            month = '0' + month
+        if len(day) is 1:
+            day = '0' + day
+        new_birth = year + month + day
+        if id_num[6:14] != new_birth:
+            return False
+
         # 身份证前17位权值
         weight = [7, 9, 10, 5, 8, 4, 2, 1, 6, 3, 7, 9, 10, 5, 8, 4, 2]
         # 检验码取值范围，与下标对应
@@ -49,10 +61,33 @@ class IDCardFrontOCR:
         nation = ocr.ocr_for_single_line(nation_img)
         nation = "".join(nation)
 
+        # 获取数字识别的ocr
+        ocr_num = CnOcr(name='ID')
+        ocr_num.set_cand_alphabet({'0', '1', '2', '3', '4', '5', '6', '7', '8', '9'})
+
+        # 裁剪年月日区域，并识别
+        year_img = img[160:190, 120:185]
+        year_img = cv2.adaptiveThreshold(year_img, 255, cv2.ADAPTIVE_THRESH_GAUSSIAN_C,
+                                         cv2.THRESH_BINARY, 45, 30)
+        year = ocr_num.ocr_for_single_line(year_img)
+        year = "".join(year)
+
+        month_img = img[160:190, 210:250]
+        month_img = cv2.adaptiveThreshold(month_img, 255, cv2.ADAPTIVE_THRESH_GAUSSIAN_C,
+                                          cv2.THRESH_BINARY, 45, 30)
+        month = ocr_num.ocr_for_single_line(month_img)
+        month = "".join(month)
+
+        day_img = img[160:190, 275:310]
+        day_img = cv2.adaptiveThreshold(day_img, 255, cv2.ADAPTIVE_THRESH_GAUSSIAN_C,
+                                        cv2.THRESH_BINARY, 45, 30)
+        day = ocr_num.ocr_for_single_line(day_img)
+        day = "".join(day)
+        birth = year + '-' + month + '-' + day
+
+        # # 地址区域整体识别，识别正确率较低
         # # 裁剪地址区域，并对该区域进行识别
         # address_img = img[200:310, 120:400]
-        # # 二值化，提高识别准确率
-        # # _, address_img = cv2.threshold(address_img, 150, 255, cv2.THRESH_BINARY)
         # # 自适应阈值化
         # address_img = cv2.adaptiveThreshold(address_img, 255, cv2.ADAPTIVE_THRESH_GAUSSIAN_C,
         #                                     cv2.THRESH_BINARY, 81, 40)
@@ -62,6 +97,7 @@ class IDCardFrontOCR:
         #     tmp1 = "".join(tmp[i])
         #     address = address + tmp1
 
+        # 地址区域分行识别，识别正确率较整体高
         address = ""
         # 裁剪地址区域，并对该区域进行识别
         address_img = img[210:242, 110:395]
@@ -93,11 +129,6 @@ class IDCardFrontOCR:
         ID = ocr_id.ocr_for_single_line(id_img)
         ID = "".join(ID)
 
-        birth = list(ID[6:14])
-        birth.insert(4, '-')
-        birth.insert(7, '-')
-        birth = "".join(birth)
-
         # 裁剪性别区域，并对该区域进行识别
         gender_img = img[100:140, 115:160]
         ocr.set_cand_alphabet({'男', '女'})
@@ -111,7 +142,7 @@ class IDCardFrontOCR:
                      "birth": birth,
                      "address": address,
                      "ID": ID,
-                     "legality": self.id_check(ID),
+                     "legality": self.id_check(ID, birth),
                      "card_type": 'idCard_front'}
         # print(json_data)
         res = json.dumps(json_data, ensure_ascii=False)
